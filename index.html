@@ -23,7 +23,7 @@
 
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
   <!--
@@ -64,24 +64,24 @@
       <div class="content center">
         <p class="eyebrow stagger">Geschenk 1</p>
 
-        <button class="reveal stagger" id="reveal" type="button" aria-expanded="false" aria-controls="reveal-body">
-          <span class="reveal-cover" aria-hidden="true">
-            <span class="reveal-icon">🎸</span>
-            <span class="reveal-hint">Tippen zum Aufdecken</span>
-          </span>
-          <span class="visually-hidden">Geschenk aufdecken</span>
-        </button>
+        <div class="reveal-stage stagger" id="reveal-stage">
+          <img class="reveal-photo" src="konzert.jpg" width="768" height="1024" alt="Lasershow beim Konzert im PMK, letztes Mal" decoding="async">
+          <button class="reveal" id="reveal" type="button" aria-expanded="false" aria-controls="reveal-body">
+            <span class="reveal-cover" aria-hidden="true">
+              <span class="reveal-icon">🎸</span>
+              <span class="reveal-hint">Tippen zum Aufdecken</span>
+            </span>
+            <span class="visually-hidden">Geschenk aufdecken</span>
+          </button>
+        </div>
 
         <div class="reveal-body" id="reveal-body" hidden>
           <h2 class="headline">Ein Abend im PMK.</h2>
           <p class="lede">Vielleicht steht ja wieder ein Kreuz in Flammen und es gibt eine coole Lasershow wie letztes Mal haha 🔥</p>
           <p class="body-text">Für nächstes Jahr ist noch nicht viel angekündigt. Wir können uns also noch was zusammen aussuchen.</p>
-          <div class="info-row">
-            <span class="info-icon" aria-hidden="true">📍</span>
-            <span><strong>PMK</strong><br>Viaduktbogen 19–20, Innsbruck</span>
-          </div>
+          <p class="place"><span aria-hidden="true">📍</span> <strong>PMK</strong> · Viaduktbogen 19–20, Innsbruck</p>
           <div class="actions">
-            <a class="btn btn-secondary" href="https://pmk.or.at/de/events/" target="_blank" rel="noopener">Programm ansehen <span aria-hidden="true">↗</span></a>
+            <a class="btn btn-secondary" href="https://pmk.or.at/de/events/" target="_blank" rel="noopener">Programm <span aria-hidden="true">↗</span></a>
             <button class="btn btn-primary" type="button" data-next>Weiter</button>
           </div>
         </div>
@@ -195,6 +195,6 @@
 
   </main>
 
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>

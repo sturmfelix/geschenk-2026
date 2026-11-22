@@ -324,24 +324,47 @@ body {
 /* ============================================================
    Geschenk 1: Reveal
    ============================================================ */
-.reveal {
+.reveal-stage {
   position: relative;
-  display: block;
   width: 100%;
   max-width: 22rem;
-  margin: 12px auto 0;
-  aspect-ratio: 4 / 3.4;
-  padding: 0;
-  border: 1px solid var(--separator);
+  margin: 12px auto 24px;
+  aspect-ratio: 16 / 10;
   border-radius: 28px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 30px 80px -30px rgba(48, 209, 88, 0.45), 0 0 0 1px var(--separator);
+}
+/* Konzertfoto: erst unscharf und dunkel unter der Karte, beim Aufdecken scharf */
+.reveal-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 48%;
+  filter: blur(18px) brightness(0.55);
+  transform: scale(1.12);
+  transition: filter 1100ms var(--ease-out), transform 1100ms var(--ease-out);
+}
+.reveal-stage.is-open .reveal-photo {
+  filter: none;
+  transform: none;
+}
+.reveal {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
   background:
-    radial-gradient(120% 90% at 50% 110%, rgba(255, 69, 58, 0.45), transparent 60%),
-    linear-gradient(160deg, #2c2c2e, #111);
+    radial-gradient(120% 90% at 50% 110%, rgba(255, 69, 58, 0.4), transparent 60%),
+    linear-gradient(160deg, rgba(44, 44, 46, 0.72), rgba(0, 0, 0, 0.78));
   color: var(--label);
   font: inherit;
   cursor: pointer;
-  overflow: hidden;
-  box-shadow: 0 30px 80px -30px rgba(255, 69, 58, 0.5);
   transition: transform 300ms var(--ease-out);
 }
 .reveal:active { transform: scale(0.97); }
@@ -386,20 +409,14 @@ body {
   to { opacity: 1; transform: none; filter: none; }
 }
 
-.info-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 8px;
-  padding: 14px 20px;
-  border-radius: 18px;
-  background: var(--surface);
-  text-align: start;
-  font-size: 1rem;
+.place {
+  margin: 0;
+  font-size: 0.94rem;
   color: var(--label-2);
 }
-.info-row strong { color: var(--label); }
-.info-icon { font-size: 1.5rem; }
+.place strong { color: var(--label); }
+.reveal-body .actions { margin-top: 24px; }
+
 
 /* ============================================================
    Geschenk 2: Auswahlkarten
@@ -741,6 +758,10 @@ body {
   .confirm:not([hidden]) { animation: fade-in 250ms linear both; }
   .layer { animation: fade-in 250ms linear both; }
   .slide.is-active .photo.stagger { animation: none; }
+  .reveal-photo,
+  .reveal-stage.is-open .reveal-photo { transform: none; transition: opacity 250ms linear, filter 0ms; }
+  .reveal-photo { filter: none; opacity: 0; }
+  .reveal-stage.is-open .reveal-photo { opacity: 1; }
   .caret { display: none; }
   .btn:active,
   .choice:active,

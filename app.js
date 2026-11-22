@@ -145,6 +145,7 @@
   // ---------- Geschenk 1: Reveal ----------
   const revealBtn = $("#reveal");
   const revealBody = $("#reveal-body");
+  const revealStage = $("#reveal-stage");
   let revealed = false;
 
   function openReveal() {
@@ -152,6 +153,7 @@
     revealed = true;
     revealBtn.setAttribute("aria-expanded", "true");
     revealBtn.classList.add("is-opening");
+    revealStage.classList.add("is-open");
     const fast = reduceMotion.matches;
     window.setTimeout(() => {
       revealBtn.hidden = true;
@@ -166,6 +168,7 @@
     revealed = false;
     revealBtn.hidden = false;
     revealBtn.classList.remove("is-opening");
+    revealStage.classList.remove("is-open");
     revealBtn.setAttribute("aria-expanded", "false");
     revealBody.hidden = true;
   }
