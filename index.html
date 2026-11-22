@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#000000">
+  <title>Für dich 🎁</title>
+  <meta name="description" content="Etwas Kleines, nachträglich.">
+
+  <!-- Link-Vorschau (WhatsApp, iMessage) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Für dich 🎁">
+  <meta property="og:description" content="Etwas Kleines, nachträglich.">
+  <meta property="og:url" content="https://sturmfelix.github.io/geschenk-2026/">
+  <meta property="og:image" content="https://sturmfelix.github.io/geschenk-2026/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Für dich – ein kleines Geschenk">
+  <meta property="og:locale" content="de_AT">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!--
+    ============================================================
+    TEXTE ÄNDERN: Alle Texte stehen direkt hier im HTML.
+    Ihr Name steht nur an einer Stelle: <span data-name>…</span>
+    in Schritt 1 (Intro).
+    ============================================================
+  -->
+
+  <header class="topbar">
+    <button class="icon-btn" id="back" type="button" aria-label="Zurück" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <div class="dots" id="dots" role="progressbar" aria-label="Fortschritt" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Schritt 1 von 5"></div>
+    <span class="icon-btn-spacer" aria-hidden="true"></span>
+  </header>
+
+  <main id="deck">
+
+    <!-- 1 · INTRO -->
+    <section class="slide is-active" data-step="1" aria-label="Schritt 1 von 5: Intro">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="content center">
+        <p class="eyebrow stagger">21. November</p>
+        <h1 class="headline stagger">Alles Gute nachträglich, <span class="accent-text" data-name>Felix</span>.</h1>
+        <p class="lede stagger">Am Tag selbst war ich in den USA – darum kommt dein Geschenk erst jetzt. Dafür gleich doppelt.</p>
+        <div class="actions stagger">
+          <button class="btn btn-primary" type="button" data-next>Geschenk öffnen</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · GESCHENK 1: KONZERT -->
+    <section class="slide" data-step="2" aria-label="Schritt 2 von 5: Geschenk 1">
+      <div class="glow glow-red" aria-hidden="true"></div>
+      <div class="content center">
+        <p class="eyebrow stagger">Geschenk 1</p>
+
+        <button class="reveal stagger" id="reveal" type="button" aria-expanded="false" aria-controls="reveal-body">
+          <span class="reveal-cover" aria-hidden="true">
+            <span class="reveal-icon">🎸</span>
+            <span class="reveal-hint">Tippen zum Aufdecken</span>
+          </span>
+          <span class="visually-hidden">Geschenk aufdecken</span>
+        </button>
+
+        <div class="reveal-body" id="reveal-body" hidden>
+          <h2 class="headline">Ein Abend in der PMK.</h2>
+          <p class="lede">Ich lade dich auf ein Metal-Konzert ein – wie letztes Mal, als wir zusammen dort waren.</p>
+          <p class="body-text">Für nächstes Jahr ist noch nicht viel angekündigt. Also suchen wir das Konzert zusammen aus, sobald das Programm steht.</p>
+          <div class="info-row">
+            <span class="info-icon" aria-hidden="true">📍</span>
+            <span><strong>PMK</strong><br>Viaduktbogen 19–20, Innsbruck</span>
+          </div>
+          <div class="actions">
+            <a class="btn btn-secondary" href="https://www.pmk.or.at" target="_blank" rel="noopener">Programm ansehen <span aria-hidden="true">↗</span></a>
+            <button class="btn btn-primary" type="button" data-next>Weiter</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · GESCHENK 2: DESSERT -->
+    <section class="slide" data-step="3" aria-label="Schritt 3 von 5: Geschenk 2">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="content">
+        <p class="eyebrow stagger">Geschenk 2</p>
+        <h2 class="headline stagger">Dessert nach Wahl.</h2>
+        <p class="lede stagger">Ich backe, du entscheidest.</p>
+
+        <fieldset class="choices stagger" id="choices">
+          <legend class="visually-hidden">Wähle dein Dessert</legend>
+
+          <label class="choice">
+            <input type="radio" name="dessert" value="Cheesecake">
+            <span class="choice-icon" aria-hidden="true">🍰</span>
+            <span class="choice-title">Cheese&shy;cake</span>
+            <span class="choice-check" aria-hidden="true"></span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="dessert" value="Mousse au Chocolat">
+            <span class="choice-icon" aria-hidden="true">🍫</span>
+            <span class="choice-title">Mousse au Chocolat</span>
+            <span class="choice-check" aria-hidden="true"></span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="dessert" value="Tiramisu">
+            <span class="choice-icon" aria-hidden="true">☕️</span>
+            <span class="choice-title">Tiramisu</span>
+            <span class="choice-check" aria-hidden="true"></span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="dessert" value="wish">
+            <span class="choice-icon" aria-hidden="true">✨</span>
+            <span class="choice-title">Eigener Wunsch</span>
+            <span class="choice-check" aria-hidden="true"></span>
+          </label>
+        </fieldset>
+
+        <div class="wish" id="wish" hidden>
+          <label class="wish-label" for="wish-input">Worauf hast du Lust?</label>
+          <textarea id="wish-input" rows="2" maxlength="140" placeholder="z. B. Apfelstrudel mit Vanilleeis" autocomplete="off"></textarea>
+        </div>
+
+        <p class="confirm" id="confirm" role="status" hidden></p>
+
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="share" disabled>Mir Bescheid sagen</button>
+          <button class="btn btn-tertiary" type="button" data-next>Weiter</button>
+        </div>
+        <p class="toast" id="toast" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- 4 · ÜBERGABE -->
+    <section class="slide" data-step="4" aria-label="Schritt 4 von 5: Übergabe">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="content center">
+        <p class="eyebrow stagger">Übergabe</p>
+        <div class="cal stagger" aria-hidden="true">
+          <span class="cal-month">Dez</span>
+          <span class="cal-day">28</span>
+        </div>
+        <h2 class="headline stagger">Am 28.&nbsp;Dezember in Innsbruck.</h2>
+        <p class="lede stagger">Dann bringe ich dir <strong class="em" id="handover-dessert">dein Dessert</strong> mit. Frisch gemacht, versprochen.</p>
+        <div class="actions stagger">
+          <button class="btn btn-primary" type="button" data-next>Weiter</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 · OUTRO -->
+    <section class="slide" data-step="5" aria-label="Schritt 5 von 5: Zum Schluss">
+      <div class="glow glow-warm" aria-hidden="true"></div>
+      <div class="content center">
+        <div class="lasagna" id="lasagna" aria-hidden="true">
+          <div class="layers" id="layers"></div>
+          <div class="dish"></div>
+        </div>
+        <p class="eyebrow layer-count" id="layer-count" aria-hidden="true">&nbsp;</p>
+        <h2 class="headline stagger">Und dann: Lasagne.</h2>
+        <p class="lede stagger">Vielleicht machen wir auch nochmal unsere berühmte Gemüselasagne. Und vielleicht schaffen wir dieses Mal ja mehr als zwei Schichten.</p>
+        <p class="signoff stagger">Alles Liebe – und bis bald.</p>
+        <div class="actions stagger">
+          <button class="btn btn-tertiary" type="button" id="restart">Nochmal von vorn</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

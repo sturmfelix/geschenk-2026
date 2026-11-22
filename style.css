@@ -1,0 +1,691 @@
+/* ============================================================
+   Design-Tokens
+   Dunkel (Schwarz/Anthrazit), ein Akzent: Glut-Rot.
+   Kontraste gegen #000: Text 19:1, sekundär 7:1, Akzent 6:1.
+   ============================================================ */
+:root {
+  color-scheme: dark;
+
+  --bg: #000;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --separator: rgba(255, 255, 255, 0.1);
+
+  --label: #f5f5f7;
+  --label-2: #a1a1a6;
+  --label-3: #8e8e93;
+  --on-light: #000;
+  --on-accent: #fff;
+  --white: #fff;
+
+  --accent: #ff453a;
+  --accent-soft: rgba(255, 69, 58, 0.14);
+  --warm: #ff9f0a;
+
+  --radius-card: 22px;
+  --radius-pill: 980px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur: 700ms;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* Dynamic Type: auf iOS folgt die Grundgröße der System-Textgröße. */
+html {
+  font-size: 100%;
+  font: -apple-system-body;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--label);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.47;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Höhere Spezifität als die Komponenten-Klassen, damit [hidden] immer greift */
+[hidden]:not(.icon-btn) { display: none; }
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   Topbar mit Zurück-Button und Fortschrittspunkten
+   ============================================================ */
+.topbar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  padding: calc(var(--safe-top) + 8px) calc(var(--safe-right) + 12px) 8px calc(var(--safe-left) + 12px);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 40%, rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+.topbar > * { pointer-events: auto; }
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--label);
+  cursor: pointer;
+  transition: background 200ms ease, opacity 300ms ease;
+}
+.icon-btn:hover { background: rgba(255, 255, 255, 0.14); }
+.icon-btn[hidden] { display: grid; opacity: 0; visibility: hidden; }
+.icon-btn svg {
+  width: 20px; height: 20px;
+  fill: none; stroke: currentColor;
+  stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.28);
+  transition: width 500ms var(--ease-out), background 500ms ease;
+}
+.dot.is-done { background: rgba(255, 255, 255, 0.6); }
+.dot.is-current { width: 24px; background: var(--label); }
+
+/* ============================================================
+   Slides
+   ============================================================ */
+#deck {
+  position: fixed;
+  inset: 0;
+  touch-action: pan-y;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding:
+    calc(var(--safe-top) + 72px)
+    calc(var(--safe-right) + 24px)
+    calc(var(--safe-bottom) + 32px)
+    calc(var(--safe-left) + 24px);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(var(--from, 6%)) scale(0.97);
+  filter: blur(12px);
+  transition:
+    opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out),
+    filter var(--dur) var(--ease-out),
+    visibility 0s linear var(--dur);
+}
+.slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  filter: none;
+  transition:
+    opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out),
+    filter var(--dur) var(--ease-out),
+    visibility 0s;
+}
+.slide.is-leaving { --from: -6%; }
+
+.content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 34rem;
+  margin: auto;
+}
+.content.center { text-align: center; }
+
+/* Gestaffeltes Einblenden der Elemente pro Slide */
+.stagger {
+  opacity: 0;
+  transform: translateY(18px);
+  filter: blur(6px);
+}
+.slide.is-active .stagger {
+  animation: rise 900ms var(--ease-out) forwards;
+  animation-delay: calc(120ms + var(--i, 0) * 90ms);
+}
+/* Beim Verlassen bleibt der Inhalt sichtbar, bis das Slide ausgeblendet ist */
+.slide.is-leaving .stagger { opacity: 1; transform: none; filter: none; }
+@keyframes rise {
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+/* Weiches Leuchten im Hintergrund */
+.glow {
+  position: fixed;
+  left: 50%;
+  top: 38%;
+  width: 140vmax;
+  height: 140vmax;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.06), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.glow-red { background: radial-gradient(closest-side, rgba(255, 69, 58, 0.16), transparent 70%); }
+.glow-warm { background: radial-gradient(closest-side, rgba(255, 159, 10, 0.1), transparent 70%); }
+
+/* ============================================================
+   Typografie
+   ============================================================ */
+.eyebrow {
+  margin: 0 0 12px;
+  font-size: 0.94rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--accent);
+}
+
+.headline {
+  margin: 0 0 20px;
+  font-size: clamp(2.5rem, 7vw + 1.1rem, 4.75rem);
+  font-weight: 700;
+  /* hig-disable-next-line css/line-height-below-1-2 -- große Display-Headline, max. 3 Zeilen; enge Laufweite wie auf apple.com */
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  background: linear-gradient(180deg, #fff 30%, #c7c7cc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.accent-text {
+  background: linear-gradient(100deg, #ff6a3d, var(--accent) 60%, #ff2d55);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lede {
+  margin: 0 0 16px;
+  font-size: clamp(1.18rem, 1vw + 1rem, 1.5rem);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--label-2);
+  text-wrap: pretty;
+}
+.lede .em { color: var(--label); font-weight: 700; }
+.body-text {
+  margin: 0 0 16px;
+  font-size: 1.06rem;
+  color: var(--label-2);
+  text-wrap: pretty;
+}
+.signoff {
+  margin: 8px 0 0;
+  font-size: 1.06rem;
+  font-weight: 600;
+  color: var(--label);
+}
+
+/* ============================================================
+   Buttons (min. 44 pt, Pill-Form wie auf apple.com)
+   ============================================================ */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+.content:not(.center) .actions { justify-content: flex-start; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 50px;
+  min-width: 44px;
+  padding: 12px 28px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 1.06rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 200ms var(--ease-out), background 200ms ease, opacity 200ms ease;
+}
+.btn:active { transform: scale(0.96); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn:disabled:active { transform: none; }
+
+.btn-primary { background: var(--label); color: var(--on-light); }
+.btn-primary:hover:not(:disabled) { background: var(--white); }
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--label);
+}
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.16); }
+
+.btn-tertiary {
+  background: transparent;
+  color: var(--label-2);
+  padding-inline: 20px;
+}
+.btn-tertiary:hover { color: var(--label); }
+
+/* ============================================================
+   Geschenk 1: Reveal
+   ============================================================ */
+.reveal {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  margin: 12px auto 0;
+  aspect-ratio: 4 / 3.4;
+  padding: 0;
+  border: 1px solid var(--separator);
+  border-radius: 28px;
+  background:
+    radial-gradient(120% 90% at 50% 110%, rgba(255, 69, 58, 0.45), transparent 60%),
+    linear-gradient(160deg, #2c2c2e, #111);
+  color: var(--label);
+  font: inherit;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 30px 80px -30px rgba(255, 69, 58, 0.5);
+  transition: transform 300ms var(--ease-out);
+}
+.reveal:active { transform: scale(0.97); }
+.reveal-cover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+.reveal-icon {
+  font-size: 4.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 10px 30px rgba(255, 69, 58, 0.55));
+  animation: bob 3.2s ease-in-out infinite;
+}
+.reveal-hint {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--label-2);
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-8px) rotate(6deg); }
+}
+
+.slide.is-active .reveal.is-opening {
+  pointer-events: none;
+  animation: reveal-out 650ms var(--ease-out) forwards;
+}
+@keyframes reveal-out {
+  40% { transform: scale(1.04); opacity: 1; filter: blur(0); }
+  100% { transform: scale(1.25); opacity: 0; filter: blur(16px); }
+}
+
+.reveal-body { margin-top: 4px; }
+.reveal-body:not([hidden]) { animation: reveal-in 900ms var(--ease-out) both; }
+@keyframes reveal-in {
+  from { opacity: 0; transform: scale(0.94); filter: blur(14px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+.info-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+  padding: 14px 20px;
+  border-radius: 18px;
+  background: var(--surface);
+  text-align: start;
+  font-size: 1rem;
+  color: var(--label-2);
+}
+.info-row strong { color: var(--label); }
+.info-icon { font-size: 1.5rem; }
+
+/* ============================================================
+   Geschenk 2: Auswahlkarten
+   ============================================================ */
+.choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 28px 0 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.choice {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 9.5rem;
+  padding: 18px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--separator);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition:
+    transform 250ms var(--ease-out),
+    background 300ms ease,
+    box-shadow 300ms ease,
+    opacity 300ms ease;
+}
+.choice:active { transform: scale(0.97); }
+.choice input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.choice:has(input:focus-visible) {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.choice-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+.choice-title {
+  font-size: clamp(1.15rem, 2.4vw + 0.7rem, 1.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  hyphens: manual;
+  overflow-wrap: break-word;
+}
+.choice-check {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.22);
+  transition: background 250ms ease, box-shadow 250ms ease, transform 350ms var(--ease-spring);
+}
+.choice-check::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 5px;
+  width: 6px;
+  height: 12px;
+  border: solid var(--on-accent);
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 300ms var(--ease-spring);
+}
+
+/* Ausgewählt: Rahmen + Haken (nicht nur Farbe) */
+.choices.has-choice .choice:not(.is-selected) { opacity: 0.55; }
+.choice.is-selected {
+  background: linear-gradient(160deg, rgba(255, 69, 58, 0.2), var(--surface) 70%);
+  box-shadow: inset 0 0 0 2px var(--accent), 0 20px 50px -24px rgba(255, 69, 58, 0.7);
+}
+.choice.is-selected .choice-check {
+  background: var(--accent);
+  box-shadow: none;
+  transform: scale(1.08);
+}
+.choice.is-selected .choice-check::after { transform: rotate(45deg) scale(1); }
+.choice.is-selected .choice-icon { animation: pop 450ms var(--ease-spring); }
+@keyframes pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+.wish {
+  margin-top: 16px;
+  animation: reveal-in 500ms var(--ease-out) both;
+}
+.wish-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: var(--label-2);
+}
+.wish textarea {
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--separator);
+  color: var(--label);
+  font: inherit;
+  font-size: max(1rem, 16px); /* verhindert Auto-Zoom in iOS Safari */
+  line-height: 1.4;
+  resize: none;
+}
+.wish textarea::placeholder { color: var(--label-3); }
+.wish textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.confirm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0 0;
+  font-size: 1.06rem;
+  font-weight: 600;
+  color: var(--label);
+}
+.confirm:not([hidden]) { animation: reveal-in 500ms var(--ease-out) both; }
+.confirm::before {
+  content: "✓";
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.confirm.is-hint { color: var(--label-2); font-weight: 400; }
+.confirm.is-hint::before { content: "✎"; background: var(--surface-2); color: var(--label-2); }
+
+.toast {
+  min-height: 1.5em;
+  margin: 14px 0 0;
+  font-size: 0.94rem;
+  color: var(--label-2);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.toast.is-visible { opacity: 1; }
+
+/* ============================================================
+   Übergabe: Kalenderblatt
+   ============================================================ */
+.cal {
+  display: inline-flex;
+  flex-direction: column;
+  width: 128px;
+  margin: 8px auto 28px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 30px 70px -30px rgba(255, 69, 58, 0.55), inset 0 0 0 1px var(--separator);
+}
+.cal-month {
+  padding: 8px 0 6px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.cal-day {
+  padding: 4px 0 12px;
+  font-size: 4rem;
+  font-weight: 700;
+  /* hig-disable-next-line css/line-height-below-1-2 -- einzeilige Zahl im Kalenderblatt */
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+/* ============================================================
+   Outro: Lasagne-Animation
+   ============================================================ */
+.lasagna {
+  position: relative;
+  width: 200px;
+  margin: 0 auto 10px;
+  padding-top: 8px;
+}
+.layers {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 3px;
+  min-height: 150px;
+  justify-content: flex-start;
+}
+.layer {
+  width: 176px;
+  height: 11px;
+  border-radius: 6px;
+  animation: drop 600ms var(--ease-spring) both;
+}
+.layer.pasta { background: linear-gradient(180deg, #f4d79b, #d9b46a); }
+.layer.sauce { background: linear-gradient(180deg, #e0523f, #a8291c); }
+.layer.veg { background: linear-gradient(180deg, #7fb357, #4d7f2f); }
+.layer.cheese {
+  height: 14px;
+  background: linear-gradient(180deg, #fff3c4, #f0cf6f);
+  border-radius: 8px 8px 6px 6px;
+}
+@keyframes drop {
+  from { opacity: 0; transform: translateY(-70px) scaleX(0.9); }
+  to { opacity: 1; transform: none; }
+}
+.dish {
+  width: 200px;
+  height: 18px;
+  margin-top: 4px;
+  border-radius: 4px 4px 14px 14px;
+  background: linear-gradient(180deg, #3a3a3c, #1c1c1e);
+  box-shadow: 0 18px 40px -12px rgba(255, 159, 10, 0.35);
+}
+.layer-count {
+  margin-top: 6px;
+  margin-bottom: 18px;
+  color: var(--warm);
+  min-height: 1.4em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   Desktop
+   ============================================================ */
+@media (min-width: 768px) {
+  .slide { padding-left: 48px; padding-right: 48px; }
+  .choice { min-height: 11rem; padding: 22px; }
+}
+
+/* ============================================================
+   Bewegung reduzieren: nur noch Überblenden, kein Blur/Scale.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: 300ms; }
+  .slide,
+  .slide.is-active,
+  .slide.is-leaving {
+    transform: none;
+    filter: none;
+  }
+  .stagger,
+  .slide.is-active .stagger {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    animation: none;
+  }
+  .reveal-icon,
+  .choice.is-selected .choice-icon { animation: none; }
+  .slide.is-active .reveal.is-opening { animation: fade-out 200ms linear forwards; }
+  .reveal-body:not([hidden]),
+  .wish,
+  .confirm:not([hidden]) { animation: fade-in 250ms linear both; }
+  .layer { animation: fade-in 250ms linear both; }
+  .btn:active,
+  .choice:active,
+  .reveal:active { transform: none; }
+  .dot,
+  .choice-check,
+  .choice-check::after { transition-duration: 0ms; }
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { to { opacity: 0; } }
