@@ -1,4 +1,4 @@
-# geschenk-2026
+# geschenk-franzi
 
 Kleine statische Seite (HTML, CSS, Vanilla-JS). Kein Build-Schritt.
 
