@@ -118,7 +118,7 @@
   backBtn.addEventListener("click", prev);
 
   document.addEventListener("keydown", (e) => {
-    if (e.target.closest("textarea, input[type='text']")) return;
+    if (e.target.closest?.("textarea, input[type='text']")) return;
     if (e.key === "ArrowRight") next();
     if (e.key === "ArrowLeft") prev();
   });
@@ -350,6 +350,109 @@
     countEl.innerHTML = "&nbsp;";
   }
 
+  // ---------- Intro: Konfetti beim Öffnen ----------
+  function confetti(originEl) {
+    if (reduceMotion.matches) return;
+    const canvas = document.createElement("canvas");
+    canvas.className = "confetti";
+    canvas.setAttribute("aria-hidden", "true");
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.scale(dpr, dpr);
+
+    const r = originEl.getBoundingClientRect();
+    const ox = r.left + r.width / 2;
+    const oy = r.top + r.height / 2;
+    const colors = ["#ff453a", "#ff9f0a", "#ffd60a", "#f5f5f7", "#ff375f"];
+    const parts = Array.from({ length: 90 }, () => {
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 0.9;
+      const speed = 7 + Math.random() * 9;
+      return {
+        x: ox, y: oy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        w: 5 + Math.random() * 5,
+        h: 8 + Math.random() * 8,
+        rot: Math.random() * Math.PI,
+        vr: (Math.random() - 0.5) * 0.3,
+        color: colors[(Math.random() * colors.length) | 0],
+      };
+    });
+
+    const t0 = performance.now();
+    const LIFE = 1900;
+    (function frame(now) {
+      const t = now - t0;
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalAlpha = Math.max(0, 1 - Math.max(0, t - LIFE * 0.55) / (LIFE * 0.45));
+      parts.forEach((p) => {
+        p.vy += 0.32;
+        p.vx *= 0.985;
+        p.vy *= 0.985;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.scale(1, Math.cos(p.rot * 2)); // leichtes "Flattern"
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      });
+      if (t < LIFE) requestAnimationFrame(frame);
+      else canvas.remove();
+    })(t0);
+  }
+
+  $("#open-gift").addEventListener("click", (e) => {
+    confetti(e.currentTarget);
+    window.setTimeout(() => go(1), reduceMotion.matches ? 0 : 280);
+  });
+
+  // ---------- Abschluss: Schreibmaschine ----------
+  const typedEl = $("#typed");
+  const typedText = typedEl.dataset.text;
+  const graphemes = window.Intl && Intl.Segmenter
+    ? [...new Intl.Segmenter("de", { granularity: "grapheme" }).segment(typedText)].map((x) => x.segment)
+    : Array.from(typedText);
+  // Voller Text für VoiceOver, sichtbarer Text wird getippt; "ghost" hält die Höhe stabil
+  typedEl.innerHTML =
+    '<span class="visually-hidden"></span>' +
+    '<span class="typed-ghost" aria-hidden="true"></span>' +
+    '<span class="typed-out" aria-hidden="true"><span class="typed-text"></span><span class="caret"></span></span>';
+  $(".visually-hidden", typedEl).textContent = typedText;
+  $(".typed-ghost", typedEl).textContent = typedText;
+  const typedOut = $(".typed-text", typedEl);
+  let typeTimer;
+
+  function startTyping() {
+    window.clearTimeout(typeTimer);
+    typedEl.classList.remove("is-done");
+    if (reduceMotion.matches) {
+      typedOut.textContent = typedText;
+      typedEl.classList.add("is-done");
+      return;
+    }
+    typedOut.textContent = "";
+    let i = 0;
+    const step = () => {
+      typedOut.textContent += graphemes[i++];
+      if (i < graphemes.length) {
+        const ch = graphemes[i - 1];
+        typeTimer = window.setTimeout(step, /[.,–]/.test(ch) ? 320 : 38 + Math.random() * 40);
+      } else {
+        typeTimer = window.setTimeout(() => typedEl.classList.add("is-done"), 1600);
+      }
+    };
+    typeTimer = window.setTimeout(step, 900);
+  }
+
   $("#restart").addEventListener("click", () => {
     resetReveal();
     go(0);
@@ -362,9 +465,11 @@
       window.clearTimeout(leaveTimer);
       buildLasagna();
     }
+    if (i === 5) startTyping();
   }
   function onLeave(i) {
     if (i === 4) leaveTimer = window.setTimeout(clearLasagna, dur());
+    if (i === 5) window.clearTimeout(typeTimer);
   }
 
   restore();
