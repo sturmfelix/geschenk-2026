@@ -10,17 +10,17 @@
   const DESSERTS = {
     "Cheesecake": {
       msg: "Ich nehme Cheesecake! 🍰",
-      confirm: "Cheesecake – sehr gute Wahl.",
+      confirm: "Cheesecake, sehr gute Wahl.",
       handover: "deinen Cheesecake",
     },
     "Mousse au Chocolat": {
       msg: "Ich nehme Mousse au Chocolat! 🍫",
-      confirm: "Mousse au Chocolat – ausgezeichnete Wahl.",
+      confirm: "Mousse au Chocolat, ausgezeichnete Wahl.",
       handover: "deine Mousse au Chocolat",
     },
     "Tiramisu": {
       msg: "Ich nehme Tiramisu! ☕️",
-      confirm: "Tiramisu – sehr gute Wahl.",
+      confirm: "Tiramisu, sehr gute Wahl.",
       handover: "dein Tiramisu",
     },
   };
@@ -314,7 +314,7 @@
     "pasta", "sauce", "veg",
     "pasta", "cheese",
   ];
-  const COUNT_LABEL = (n) => (n < 3 ? `Schicht ${n}` : "Schicht 3 – neuer Rekord!");
+  const COUNT_LABEL = (n) => (n < 3 ? `Schicht ${n}` : "Schicht 3, neuer Rekord!");
   let timers = [];
 
   function buildLasagna() {
@@ -445,7 +445,7 @@
       typedOut.textContent += graphemes[i++];
       if (i < graphemes.length) {
         const ch = graphemes[i - 1];
-        typeTimer = window.setTimeout(step, /[.,–]/.test(ch) ? 320 : 38 + Math.random() * 40);
+        typeTimer = window.setTimeout(step, /[.,!]/.test(ch) ? 320 : 38 + Math.random() * 40);
       } else {
         typeTimer = window.setTimeout(() => typedEl.classList.add("is-done"), 1600);
       }
